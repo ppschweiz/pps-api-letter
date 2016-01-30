@@ -68,14 +68,49 @@ var map_status = {
 
 var do_for_status = {
 	'unknown':false,
-	'new':true,
-	'pirate':true,
+	'new':false,
+	'pirate':false,
 	'grace':false,
-	'expired':true,
-	'pending':true,
+	'expired':false,
+	'pending':false,
 	'left':false,
 	'dead':false,
 	'excluded':false
+}
+
+function set_output() {
+	if (process.argv.length < 3) {
+		console.log("No parameter found. Creating letters for new members");
+		do_for_status['new'] = true;
+	} else if (process.argv[2] == 'new') {
+		console.log("Creating letters for new members");
+		do_for_status['new'] = true;
+	} else if (process.argv[2] == 'pending') {
+		console.log("Creating letters for pending members");
+		do_for_status['pending'] = true;
+	} else if (process.argv[2] == 'expired') {
+		console.log("Creating letters for expired members");
+		do_for_status['expired'] = true;
+	} else if (process.argv[2] == 'pirate') {
+		console.log("Creating letters for pirate and grace members");
+		do_for_status['pirate'] = true;
+		do_for_status['grace'] = true;
+	} else if (process.argv[2] == 'notpirate') {
+		console.log("Creating letters for new, pending and expired members");
+		do_for_status['new'] = true;
+		do_for_status['pending'] = true;
+		do_for_status['expired'] = true;
+	} else if (process.argv[2] == 'all') {
+		console.log("Creating letters for all members");
+		do_for_status['new'] = true;
+		do_for_status['pending'] = true;
+		do_for_status['pirate'] = true;
+		do_for_status['grace'] = true;
+		do_for_status['expired'] = true;
+	} else {
+		console.log("State one of 'new', 'pending', 'expired', 'pirate', 'notpirate' or 'all'.");
+		assert.fail(process.argv[2], 'new', "Parameter not understood", '=');
+	}
 }
 
 function needs_invoice(status_id) {
@@ -239,5 +274,6 @@ function invoke_recursive(offset, limit) {
         });
 };
 
+set_output();
 invoke_recursive(0, 100);
 
